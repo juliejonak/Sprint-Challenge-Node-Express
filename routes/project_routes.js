@@ -37,7 +37,6 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     const project = req.body;
-    //if project.name and project.description
     if (project.name && project.description) {
         projectDb.insert(project)
             .then(newProject => {
