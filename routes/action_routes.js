@@ -39,24 +39,23 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     const action = req.body;
-//still adds invalid project ids and with invalid IDs shows Unhandled rejection error - cannot set headers after they are sent to the client
     if(action.project_id && action.description && action.notes){
         projectDb.get(action.project_id)
-            .then(
-                //returns null if id isn't found
+            .then(response => {
+                console.log("response is:", response);
                 actionDb.insert(action)
                     .then(newAction => {
-                        console.log("new action:", newAction)
+                        console.log("new action:", newAction);
                         res.json(newAction)
                     })
                     .catch(err => {
                         res
                         .status(500)
                         .json({
-                            message: "There was an error addding this new action."
+                            message: "There was an error adding this new action."
                         })
                     })
-            )
+            })
             .catch(err=>{
                 res
                 .status(404)
