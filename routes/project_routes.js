@@ -70,5 +70,35 @@ router.post('/', (req, res) => {
     }
 });
 
+//DELETE
+
+router.delete('/:id', (req, res) => {
+    const {id} = req.params;
+    projectDb.get(id)
+        .then(action => {
+            const theProject = action;
+            projectDb.remove(id)
+                .then(count => {
+                    if(count){
+                        res.json(theProject);
+                    }
+                })
+        })
+        .catch(err => {
+            res
+            .status(404)
+            .json({
+                message: "That project ID is invalid."
+            })
+        })
+        .catch(err => {
+            res
+            .status(500)
+            .json({
+                message: "This project could not be deleted."
+            })
+        })
+});
+
 
 module.exports = router;

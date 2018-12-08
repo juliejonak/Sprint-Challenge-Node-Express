@@ -119,7 +119,7 @@ router.delete('/:id', (req, res) => {
                 message: "This action could not be deleted."
             })
         })
-})
+});
 
 
 module.exports = router;
