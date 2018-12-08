@@ -42,10 +42,8 @@ router.post('/', (req, res) => {
     if(action.project_id && action.description && action.notes){
         projectDb.get(action.project_id)
             .then(response => {
-                console.log("response is:", response);
                 actionDb.insert(action)
                     .then(newAction => {
-                        console.log("new action:", newAction);
                         res.json(newAction)
                     })
                     .catch(err => {
@@ -126,28 +124,39 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
     const {id} = req.params;
     const action = req.body;
-    //NEEDS TO CHECK VALID PROJECT ID
+    
     if (action.project_id && action.description && action.notes) {
-        actionDb.update(id, action)
-            .then(count => {
-                if ( count === null) {
-                    res
-                    .status(404)
-                    .json({
-                        message: "That action ID is invalid."
+        projectDb.get(action.project_id)
+            .then(response => {
+                console.log("the response is:", response);
+                actionDb.update(id, action)
+                    .then(count => {
+                        if (count === null) {
+                            res
+                            .status(404)
+                            .json({
+                                message: "That action ID is invalid."
+                            })
+                        } else {
+                            actionDb.get(id)
+                                .then(action => {
+                                    res.json(action)
+                                })
+                        }
                     })
-                } else {
-                    actionDb.get(id)
-                        .then(action => {
-                            res.json(action)
+                    .catch(err => {
+                        res
+                        .status(500)
+                        .json({
+                            message: "Unable to update this action."
                         })
-                }
+                    })
             })
             .catch(err => {
                 res
-                .status(500)
+                .status(404)
                 .json({
-                    message: "Unable to update this action."
+                    message: "Invalid project ID."
                 })
             })
     } else if (action.project_id && action.description){
