@@ -122,5 +122,61 @@ router.delete('/:id', (req, res) => {
         })
 });
 
+//PUT
+
+router.put('/:id', (req, res) => {
+    const {id} = req.params;
+    const action = req.body;
+    //NEEDS TO CHECK VALID PROJECT ID
+    if (action.project_id && action.description && action.notes) {
+        actionDb.update(id, action)
+            .then(count => {
+                if ( count === null) {
+                    res
+                    .status(404)
+                    .json({
+                        message: "That action ID is invalid."
+                    })
+                } else {
+                    actionDb.get(id)
+                        .then(action => {
+                            res.json(action)
+                        })
+                }
+            })
+            .catch(err => {
+                res
+                .status(500)
+                .json({
+                    message: "Unable to update this action."
+                })
+            })
+    } else if (action.project_id && action.description){
+        res
+        .status(400)
+        .json({
+            message: "Actions need notes."
+        })
+    } else if (action.project_id && action.notes) {
+        res
+        .status(400)
+        .json({
+            message: "Actions need a description."
+        })
+    } else if (action.notes && action.description) {
+        res
+        .status(400)
+        .json({
+            message: "Actions need a valid project ID."
+        })
+    } else {
+        res
+        .status(400)
+        .json({
+            message: "Actions need a valid project ID, name and a description."
+        })
+    }
+});
+
 
 module.exports = router;
