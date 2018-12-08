@@ -3,8 +3,33 @@ import axios from 'axios';
 import {Route, NavLink} from 'react-router-dom';
 
 import './App.css';
+import ProjectList from './ProjectList';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      projects: []
+    }
+  }
+
+  componentDidMount = () => {
+    axios.get('https://sprintnodeexpress.herokuapp.com/projects')
+      .then( response => {
+        if(typeof response.data.message === 'string'){
+          Promise.reject("Error: the projects can't be retrieved.")
+        }
+        this.setState({ projects: response.data })
+      })
+      .catch(err => console.log(err))
+  }
+
+  deleteProject = () => {
+
+  }
+
+
+
   render() {
     return (
       <div>
@@ -16,7 +41,9 @@ class App extends Component {
           <NavLink to='/add-action'>Add New Action</NavLink>
         </nav>
 
-      
+        <Route exact path='/' render={(props)=> <ProjectList {...props} projects={this.state.projects} delete={this.deleteProject} /> } />
+
+
       </div>
     );
   }
