@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const actionDb = require('../data/helpers/actionModel');
+const projectDb = require('../data/helpers/projectModel');
 
 //GET
 
@@ -38,9 +39,9 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     const action = req.body;
-
+//still adds invalid project ids and with invalid IDs shows Unhandled rejection error - cannot set headers after they are sent to the client
     if(action.project_id && action.description && action.notes){
-        actionDb.get(action.project_id)
+        projectDb.get(action.project_id)
             .then(
                 actionDb.insert(action)
                     .then(newAction => {
@@ -89,5 +90,36 @@ router.post('/', (req, res) => {
     }
 
 });
+
+//DELETE
+
+router.delete('/:id', (req, res) => {
+    const {id} = req.params;
+    actionDb.get(id)
+        .then(action => {
+            const theAction = action;
+            actionDb.remove(id)
+                .then(count => {
+                    if(count){
+                        res.json(theAction);
+                    }
+                })
+        })
+        .catch(err => {
+            res
+            .status(404)
+            .json({
+                message: "That action ID is invalid."
+            })
+        })
+        .catch(err => {
+            res
+            .status(500)
+            .json({
+                message: "This action could not be deleted."
+            })
+        })
+})
+
 
 module.exports = router;
