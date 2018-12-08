@@ -27,10 +27,26 @@ server.get('/projects', (req, res) => {
             res
             .status(500)
             .json({
-                message: "Cound not fetch the projects."
+                message: "Could not fetch the projects."
             })
         })
-})
+});
+
+server.get('/actions', (req, res) => {
+    actionDb.get()
+        .then(actions => {
+            res.json(actions)
+        })
+        .catch(err => {
+            res
+            .status(500)
+            .json({
+                message: "Could not fetch the actions."
+            })
+        })
+});
+
+
 
 
 server.listen(PORT, ()=>{
