@@ -3,10 +3,8 @@ const helmet = require('helmet');
 const logger = require('morgan');
 const cors = require('cors');
 
-const actionDb = require('./data/helpers/actionModel');
-const projectDb = require('./data/helpers/projectModel');
-
 const actionRouter = require('./routes/action_routes');
+const projectRouter = require('./routes/project_routes');
 
 const server = express();
 
@@ -20,22 +18,10 @@ server.use(
 const PORT = process.env.PORT || 4310;
 
 
-server.get('/projects', (req, res) => {
-    projectDb.get()
-        .then(projects => {
-            res.json(projects)
-        })
-        .catch(err => {
-            res
-            .status(500)
-            .json({
-                message: "Could not fetch the projects."
-            })
-        })
-});
+
+server.use('/projects', projectRouter);
 
 server.use('/actions', actionRouter);
-
 
 
 
