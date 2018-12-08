@@ -24,8 +24,21 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
-  deleteProject = () => {
-
+  deleteProject = (id) => {
+    return() => {
+      axios.delete(`https://sprintnodeexpress.herokuapp.com/projects/${id}`)
+        .then(response => {
+          axios.get(`https://sprintnodeexpress.herokuapp.com/projects`)
+            .then(response => {
+              if(typeof response.data.message === 'string'){
+                Promise.reject("Error: the projects can't be retrieved")
+              }
+              this.setState({ projects: response.data })
+            })
+            .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
+    }
   }
 
 
