@@ -100,5 +100,54 @@ router.delete('/:id', (req, res) => {
         })
 });
 
+//PUT
+
+router.put('/:id', (req, res) => {
+    const {id} = req.params;
+    const project = req.body;
+
+    if (project.name && project.description) {
+        projectDb.update(id, project)
+            .then(count => {
+                if ( count === null) {
+                    res
+                    .status(404)
+                    .json({
+                        message: "That project ID is invalid."
+                    })
+                } else {
+                    projectDb.get(id)
+                        .then(project => {
+                            res.json(project)
+                        })
+                }
+            })
+            .catch(err => {
+                res
+                .status(500)
+                .json({
+                    message: "Unable to update this project."
+                })
+            })
+    } else if (project.name){
+        res
+        .status(400)
+        .json({
+            message: "Projects need a description."
+        })
+    } else if (project.description) {
+        res
+        .status(400)
+        .json({
+            message: "Projects need a name."
+        })
+    } else {
+        res
+        .status(400)
+        .json({
+            message: "Projects need a name and a description."
+        })
+    }
+});
 
 module.exports = router;

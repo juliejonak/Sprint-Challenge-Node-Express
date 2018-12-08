@@ -43,6 +43,7 @@ router.post('/', (req, res) => {
     if(action.project_id && action.description && action.notes){
         projectDb.get(action.project_id)
             .then(
+                //returns null if id isn't found
                 actionDb.insert(action)
                     .then(newAction => {
                         console.log("new action:", newAction)
