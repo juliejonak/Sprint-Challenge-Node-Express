@@ -33,5 +33,43 @@ router.get('/:id', (req, res) => {
         })
 });
 
+//POST
+
+router.post('/', (req, res) => {
+    const project = req.body;
+    //if project.name and project.description
+    if (project.name && project.description) {
+        projectDb.insert(project)
+            .then(newProject => {
+                res.json(newProject)
+            })
+            .catch(err => {
+                res
+                .status(500)
+                .json({
+                    message: "Error adding this new project."
+                })
+            })
+    } else if (project.name) {
+        res
+        .status(400)
+        .json({
+            message: "New projects need a description."
+        })
+    } else if (project.description) {
+        res
+        .status(400)
+        .json({
+            message: "New projects need a name."
+        })
+    } else {
+        res
+        .status(400)
+        .json({
+            message: "New projects need both a name and description."
+        })
+    }
+});
+
 
 module.exports = router;
