@@ -6,6 +6,8 @@ const cors = require('cors');
 const actionDb = require('./data/helpers/actionModel');
 const projectDb = require('./data/helpers/projectModel');
 
+const actionRouter = require('./routes/action_routes');
+
 const server = express();
 
 server.use(
@@ -32,19 +34,7 @@ server.get('/projects', (req, res) => {
         })
 });
 
-server.get('/actions', (req, res) => {
-    actionDb.get()
-        .then(actions => {
-            res.json(actions)
-        })
-        .catch(err => {
-            res
-            .status(500)
-            .json({
-                message: "Could not fetch the actions."
-            })
-        })
-});
+server.use('/actions', actionRouter);
 
 
 
