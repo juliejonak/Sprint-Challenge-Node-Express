@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 const Project = props => {
     return(
@@ -10,9 +12,9 @@ const Project = props => {
     );
 };
 
-Project.defaultProps = {
-    name: '',
-    description: ''
+Project.propTypes = {
+    name: PropTypes.string,
+    description: PropTypes.string
 };
 
 export default Project;

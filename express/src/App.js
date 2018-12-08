@@ -4,12 +4,14 @@ import {Route, NavLink} from 'react-router-dom';
 
 import './App.css';
 import ProjectList from './ProjectList';
+import ActionList from './ActionList';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projects: []
+      projects: [],
+      actions: []
     }
   }
 
@@ -20,6 +22,14 @@ class App extends Component {
           Promise.reject("Error: the projects can't be retrieved.")
         }
         this.setState({ projects: response.data })
+      })
+      .catch(err => console.log(err))
+    axios.get('https://sprintnodeexpress.herokuapp.com/actions')
+      .then(response=>{
+        if(typeof response.data.message === 'string'){
+          Promise.reject("Error: the actions can't be retrieved")
+        }
+        this.setState({actions: response.data})
       })
       .catch(err => console.log(err))
   }
@@ -41,9 +51,26 @@ class App extends Component {
     }
   }
 
+  deleteAction = (id) => {
+    return() => {
+      axios.delete(`https://sprintnodeexpress.herokuapp.com/actions/${id}`)
+        .then(response => {
+          axios.get(`https://sprintnodeexpress.herokuapp.com/actions`)
+            .then(response => {
+              if(typeof response.data.message === 'string'){
+                Promise.reject("Error: the actions can't be retrieved")
+              }
+              this.setState({ actions: response.data })
+            })
+            .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
+    }
+  }
 
 
   render() {
+    console.log(this.state.projects);
     return (
       <div>
         <nav>
@@ -55,7 +82,7 @@ class App extends Component {
         </nav>
 
         <Route exact path='/' render={(props)=> <ProjectList {...props} projects={this.state.projects} delete={this.deleteProject} /> } />
-
+        <Route path='/actions' render={(props)=> <ActionList {...props} actions={this.state.actions} delete={this.deleteAction} />} />
 
       </div>
     );
