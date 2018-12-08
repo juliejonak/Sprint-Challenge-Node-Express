@@ -2,6 +2,10 @@
   "name": "Sprint-Challenge-Node-Express",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
   "repository": "https://github.com/juliejonak/Sprint-Challenge-Node-Express.git",
   "author": "Julie Jonak <juliejonak10@gmail.com>",
   "license": "MIT",
