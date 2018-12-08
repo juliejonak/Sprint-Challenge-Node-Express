@@ -18,6 +18,20 @@ router.get('/', (req, res) => {
         })
 });
 
+router.get('/:id', (req, res) => {
+    const {id} = req.params;
+    projectDb.get(id)
+        .then(project => {
+            res.json(project);
+        })
+        .catch(err => {
+            res
+            .status(404)
+            .json({
+                message: "That project ID does not exist."
+            })
+        })
+});
 
 
 module.exports = router;
